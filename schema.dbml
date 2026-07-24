@@ -1,0 +1,164 @@
+Table Club {
+  club_id integer [pk] 
+  name varchar 
+  short_name varchar
+  city varchar
+  country varchar 
+  founded integer [note: 'Year founded'] 
+  stadium_id integer
+}
+
+Table Season {
+  season_id integer [pk]
+  name varchar
+}
+
+Table Competition {
+  competition_id integer [pk]
+  name varchar
+  country varchar
+  competition_type varchar 
+}
+
+Table Stadium {
+  stadium_id integer [pk]
+  name varchar
+  city varchar
+  country varchar
+  capacity integer
+  opened_year integer
+}
+
+Table Referee {
+  referee_id integer [pk]
+  first_name varchar
+  last_name varchar
+  date_of_birth date
+  country varchar
+}
+
+Table Position {
+  position_id integer [pk]
+  name varchar
+  position_group varchar [note: 'Goalkeeper, Defender, Midfielder, Forward']
+}
+
+Table Player {
+  player_id integer [pk]
+  first_name varchar
+  last_name varchar
+  date_of_birth date
+  country varchar
+  club_id integer
+  preferred_foot varchar [note: 'Left, Right or Both']
+}
+
+Table Manager {
+  manager_id integer [pk]
+  first_name varchar
+  last_name varchar
+  date_of_birth date
+  country varchar
+  club_id integer 
+}
+
+Table Match {
+  match_id integer [pk]
+  match_date date
+  season_id integer 
+  competition_id integer 
+  stadium_id integer 
+  referee_id integer 
+  home_club_id integer 
+  away_club_id integer 
+  home_score integer
+  away_score integer
+}
+
+Table Transfer {
+  transfer_id integer [pk]
+  player_id integer 
+  date_of_transfer date
+  season_id integer 
+  transfer_value integer [note: 'Transfer fee (£)']
+  from_club_id integer 
+  to_club_id integer 
+  transfer_type varchar
+}
+
+Table Trophy {
+  trophy_id integer [pk]
+  competition_id integer 
+  season_id integer 
+}
+
+Table Award {
+  award_id integer [pk]
+  name varchar
+  player_id integer 
+  manager_id integer 
+  season_id integer 
+}
+
+Table Player_Match {
+  player_id integer
+  match_id integer
+  goals integer
+  assists integer
+  yellow_cards integer
+  red_cards integer
+  minutes integer
+
+  indexes {
+    (player_id, match_id) [pk]
+  }
+}
+
+Table Player_Position {
+  player_id integer
+  position_id integer
+
+  indexes {
+    (player_id, position_id) [pk]
+  }
+}
+
+// Club relationships
+Ref: Club.stadium_id > Stadium.stadium_id
+
+// Player relationships
+Ref: Player.club_id > Club.club_id
+
+// Manager relationships
+Ref: Manager.club_id > Club.club_id
+
+// Match relationships
+Ref: Match.season_id > Season.season_id
+Ref: Match.competition_id > Competition.competition_id
+Ref: Match.stadium_id > Stadium.stadium_id
+Ref: Match.referee_id > Referee.referee_id
+Ref: Match.home_club_id > Club.club_id
+Ref: Match.away_club_id > Club.club_id
+
+// Transfer relationships
+Ref: Transfer.player_id > Player.player_id
+Ref: Transfer.season_id > Season.season_id
+Ref: Transfer.from_club_id > Club.club_id
+Ref: Transfer.to_club_id > Club.club_id
+
+// Trophy relationships
+Ref: Trophy.competition_id > Competition.competition_id
+Ref: Trophy.season_id > Season.season_id
+
+// Award relationships
+Ref: Award.player_id > Player.player_id
+Ref: Award.manager_id > Manager.manager_id
+Ref: Award.season_id > Season.season_id
+
+// Player_Match relationships
+Ref: Player_Match.player_id > Player.player_id
+Ref: Player_Match.match_id > Match.match_id
+
+// Player_Position relationships
+Ref: Player_Position.player_id > Player.player_id
+Ref: Player_Position.position_id > Position.position_id
